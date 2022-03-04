@@ -1,23 +1,54 @@
-const connect = require('./db')
+const connect = require("./db");
+
 const addFeedback = async (req, res) => {
-    console.log('adding feedback')
+    console.log("adding feedback");
 
-    // connect to db
-    // await connect()
+    try {
+        const db = await connect();
 
-    // create feedback to add
+        const feedbacks = db.collection("feedbacks");
 
-    // get all feedbacks in the same category
+        const { type, isSolved, rating, suggestion } = req.body;
 
-    // get the average score for x category
+        const newFeedback = {
+            type,
+            isSolved,
+            rating,
+            suggestion,
+        };
 
-    // check if average scoare <= 3
-        // if score <=3 post to slack
+        await feedbacks.insertOne(newFeedback);
+
+        const avgx = await feedbacks.aggregate([
+            {
+                $match: {
+                    type: newFeedback.type
+                },
+            },
+            {
+                $group: {
+                    _id: "avg",
+                    avg: {
+                        "$avg": "$rating"
+                    }
+                }
+            }
+        ]).toArray();
 
 
-    res
-        .status(201)
-        .send({ test: 'test' })
-}
 
-module.exports = addFeedback
+        const avg = avgx[0].avg.toFixed(2)
+
+        if (avg >= 3) {
+            console.log("All good!");
+        } else {
+            console.log("Average rating is lower than 3. Slack alert!");
+        }
+    } catch (err) {
+        console.log("Error while adding feedback: ", err);
+    }
+
+    res.status(201).send({ test: "test" });
+};
+
+module.exports = addFeedback;

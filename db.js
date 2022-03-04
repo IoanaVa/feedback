@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 
 const connect = async () => {
-    const uri = 'mongodb+srv://DO_NOT_MODIFY:DO_NOT_MODIFY@demo.owfy7.mongodb.net/feedbacks?retryWrites=true&w=majority';
+    const uri = 'mongodb+srv://ADMIN:admin@demo.owfy7.mongodb.net/feedbacks?retryWrites=true&w=majority';
     const client = new MongoClient(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -9,9 +9,7 @@ const connect = async () => {
 
     await client.connect();
 
-    // const dbs = await listDatabases(client);
-
-    // console.log("dbs", dbs)
+    return client.db();
 }
 
 module.exports = connect;
