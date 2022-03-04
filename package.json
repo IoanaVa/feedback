@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/IoanaVa/feedback#readme",
   "dependencies": {
-    "express": "^4.17.3"
+    "body-parser": "^1.19.2",
+    "express": "^4.17.3",
+    "mongo": "^0.1.0"
   }
 }
